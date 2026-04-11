@@ -19,6 +19,7 @@ from nanobot.agent.hook import AgentHook, AgentHookContext, CompositeHook
 from nanobot.agent.memory import Consolidator, Dream
 from nanobot.agent.runner import _MAX_INJECTIONS_PER_TURN, AgentRunSpec, AgentRunner
 from nanobot.agent.subagent import SubagentManager
+from nanobot.agent.tools.calendar import CalendarTool
 from nanobot.agent.tools.cron import CronTool
 from nanobot.agent.skills import BUILTIN_SKILLS_DIR
 from nanobot.agent.tools.filesystem import EditFileTool, ListDirTool, ReadFileTool, WriteFileTool
@@ -277,6 +278,7 @@ class AgentLoop:
             self.tools.register(WebFetchTool(proxy=self.web_config.proxy))
         self.tools.register(MessageTool(send_callback=self.bus.publish_outbound))
         self.tools.register(SpawnTool(manager=self.subagents))
+        self.tools.register(CalendarTool(workspace=self.workspace, default_timezone=self.context.timezone or "UTC"))
         if self.cron_service:
             self.tools.register(
                 CronTool(self.cron_service, default_timezone=self.context.timezone or "UTC")
